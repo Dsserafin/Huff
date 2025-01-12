@@ -2,6 +2,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 
@@ -10,7 +11,7 @@ public class Main {
 
     public static void main (String[]args) throws IOException {
         String content = new String(Files.readAllBytes(Paths.get("src/main/java/test.txt")));
-        ArrayList<Node> characters = new ArrayList<>();
+        List<Node> characters = new ArrayList<>();
         for (int i = 0; i < content.length(); i++){
             char c = content.charAt(i);
             boolean check_for_match = false;
@@ -27,16 +28,41 @@ public class Main {
             }
         }
         Node[] nodes = new Node[characters.size()];
-        char c = 'x';
-        for (int i = 0; i < nodes.length; i++){
-            Node temp = new Node(characters.get(i).getLeft(), characters.get(i).getRight(), characters.get(i).getCharacter());
-            temp.setFrequency(characters.get(i).getFrequency());
-            nodes[i] = temp;
+        int index = 0;
+        for (int i = 0; i < content.length(); i++){
+            char c = content.charAt(i);
+            boolean check_for_match = false;
+            for (int j = 0; j < index; j++ ){
+                if (nodes[j].getCharacter() == c){
+                    nodes[j].setFrequency(nodes[j].getFrequency() + 1);
+                    check_for_match = true;
+                    break;
+                }
+            }
+            if (!check_for_match){
+                nodes[index] = (new Node(null, null, c));
+                nodes[index].setFrequency(nodes[index].getFrequency() + 1);
+                index++;
+            }
         }
         Huffman huff = new Huffman(nodes);
-        Node fin = huff.HuffmanAlgorithm();
-        System.out.println(nodes[1].getCharacter());
+        huff.setCompressing();
+        ObjectOutputStream outputStream = null;
+        for (int i = 0; i < content.length(); i++) {
+            char c = content.charAt(i);
+            for (int j = 0; j < huff.getCompressed().size(); j++){
+                if (huff.getCompressed().get(j).getCharacter() == c){
+                    try {
+                        outputStream = new ObjectOutputStream(new FileOutputStream("src/main/java/path.out"));
+                        outputStream.writeObject(huff.getCompressed().get(j).getHuffmanCodeBit());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                }
+            }
+        }
+
+
     }
-
-
 }

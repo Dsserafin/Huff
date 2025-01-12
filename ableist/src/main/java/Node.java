@@ -1,8 +1,25 @@
+import java.util.BitSet;
+
 public class Node {
     private Node left;
     private Node right;
     private int frequency = 0;
     private char character;
+    private String compressCode;
+    BitSet huffmanCodeBit;
+
+    public void setBitSet() {
+        huffmanCodeBit = new BitSet(compressCode.length());
+        for (int i = 0; i < compressCode.length(); i++) {
+            if (compressCode.charAt(i) == '1') {
+                huffmanCodeBit.set(i);
+            }
+        }
+    }
+
+    public BitSet getHuffmanCodeBit() {
+        return huffmanCodeBit;
+    }
 
     public Node(Node left, Node right, char character) {
         this.left = left;
@@ -16,9 +33,15 @@ public class Node {
         this.character = character;
     }
     public Node getLeft() {
+        if (left == null){
+            return null;
+        }
         return left;
     }
     public Node getRight() {
+        if (right == null){
+            return null;
+        }
         return right;
     }
     public void setLeft(Node left) {
@@ -39,11 +62,11 @@ public class Node {
     public void calculateFrequency() {
         this.frequency = left.getFrequency() + right.getFrequency();
     }
-    public void copyNode(Node node){
-        this.setCharacter(node.getCharacter());
-        this.setFrequency(node.getFrequency());
-        this.setLeft(node.getLeft());
-        this.setRight(node.getRight());
+    public void setCompressCode(String compressCode) {
+        this.compressCode = compressCode;
+    }
+    public String getCompressCode() {
+        return compressCode;
     }
 
 }
