@@ -1,16 +1,15 @@
 import java.util.ArrayList;
 
 public class Huffman {
-    private MinHeap dfs = new MinHeap();
-    private Node[] nodeArray;
+    private MinHeap queue;
     private int size;
     private Node root;
     private ArrayList<Node> compressed = new ArrayList<>();
 
 
     public Huffman(Node[] nodeArray) {
-        this.nodeArray = nodeArray;
         size = nodeArray.length;
+        this.queue = new MinHeap(nodeArray);
 
     }
 
@@ -23,17 +22,15 @@ public class Huffman {
     }
 
     private Node HuffmanAlgorithm() {
-        Node[] result = nodeArray;
-        dfs.heapSort(result, result.length);
         for (int i = size - 1; i > 0; i--) {
-            Node left = extractMin(result);
-            Node right = extractMin(result);
+            Node left = queue.getMin();
+            Node right = queue.getMin();
             Node tempNode = new Node(left, right, left.getChar());
             tempNode.setFrequency(right.getFrequency() + left.getFrequency());
-            insert(tempNode, result);
+            queue.insert(tempNode);
 
         }
-        return extractMin(result);
+        return queue.getMin();
     }
     private Node extractMin(Node[] nodes) {
         Node min = nodes[size-1];
